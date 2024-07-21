@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Input } from '@nextui-org/react';
+import { Button, Checkbox, Input } from '@nextui-org/react';
 import Link from 'next/link';
 import React from 'react';
 import * as z from 'zod';
@@ -33,8 +33,6 @@ const LoginForm = () => {
     });
     const { errors, isSubmitting } = formState;
 
-    console.log(form.getValues());
-
     const handleFormSubmit = async (formData: FormSchemaType) => {
         try {
             const res = await signIn('credentials', {
@@ -42,6 +40,7 @@ const LoginForm = () => {
                 password: formData.password,
                 redirect: false,
             });
+            console.log({ res }, 'Hello world');
             if (res?.ok) {
                 router.push('/dashboard');
             } else {
@@ -50,6 +49,8 @@ const LoginForm = () => {
                 });
             }
         } catch (error) {
+            console.log({ error }, 'Hello world');
+
             toast.error({
                 des: (error as Error)?.message,
             });
@@ -72,38 +73,44 @@ const LoginForm = () => {
                     isInvalid={!!errors.email}
                     errorMessage={errors.email?.message as string}
                 />
-                <Input
-                    type="password"
+
+                <CustomPasswordField
                     label="Password"
-                    {...register('password')}
                     isInvalid={!!errors.password}
                     errorMessage={errors.password?.message as string}
+                    register={() => register('password')}
                 />
 
-                {/* <CustomPasswordField
-                    label="Password"
-                    {...register('password')}
-                    isInvalid={!!errors.password}
-                    errorMessage={errors.password?.message as string}
-                /> */}
-
-                <div className="space-y-3">
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between px-1">
+                        <Checkbox
+                            classNames={{
+                                label: 'text-sm',
+                            }}
+                        >
+                            Remember me
+                        </Checkbox>
+                        <Link className="text-blue-500 text-sm" href={'/forogot-password'}>
+                            Forgot Password?
+                        </Link>
+                    </div>
                     <Button
+                        isDisabled={!formState.isValid && formState.isDirty}
                         isLoading={isSubmitting}
                         type="submit"
-                        className="w-full py-7"
+                        className="w-full py-7 bg:black"
                         color="primary"
                     >
                         Login
                     </Button>
-                    <p className="text-sm text-neutral-400">
-                        Haven&apos;t create an account?
-                        <Link href={'/signup'} className="underline">
-                            {' '}
-                            Join us
-                        </Link>
-                    </p>
                 </div>
+                <p className="text-sm text-center pt-5 text-neutral-400">
+                    Haven&apos;t create an account?
+                    <Link href={'/signup'} className="underline">
+                        {' '}
+                        Join us
+                    </Link>
+                </p>
             </form>
         </div>
     );

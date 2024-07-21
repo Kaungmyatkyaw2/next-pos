@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Input } from '@nextui-org/react';
+import { Button, Checkbox, Input } from '@nextui-org/react';
 import Link from 'next/link';
 import React from 'react';
 import * as z from 'zod';
@@ -30,6 +30,7 @@ const SignupForm = () => {
             name: '',
         },
     });
+
     const { errors, isSubmitting } = formState;
 
     const handleFormSubmit = async (formData: FormSchemaType) => {
@@ -63,37 +64,42 @@ const SignupForm = () => {
                     isInvalid={!!errors.email}
                     errorMessage={errors.email?.message as string}
                 />
-                <Input
-                    type="password"
+                <CustomPasswordField
                     label="Password"
-                    {...register('password')}
                     isInvalid={!!errors.password}
                     errorMessage={errors.password?.message as string}
+                    register={() => register('password')}
                 />
-                {/* <CustomPasswordField
-                    label="Password"
-                    {...register('password')}
-                    isInvalid={!!errors.password}
-                    errorMessage={errors.password?.message as string}
-                /> */}
-
-                <div className="space-y-3">
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between px-1">
+                        <Checkbox
+                            classNames={{
+                                label: 'text-sm',
+                            }}
+                        >
+                            Remember me
+                        </Checkbox>
+                        <Link className="text-blue-500 text-sm" href={'/forogot-password'}>
+                            Forgot Password?
+                        </Link>
+                    </div>
                     <Button
                         isLoading={isSubmitting}
+                        isDisabled={!formState.isValid && formState.isDirty}
                         type="submit"
-                        className="w-full py-7"
+                        className="w-full py-7 bg:black"
                         color="primary"
                     >
                         Submit
                     </Button>
-                    <p className="text-sm text-neutral-400">
-                        Already have an account?
-                        <Link href={'/login'} className="underline">
-                            {' '}
-                            Login now
-                        </Link>
-                    </p>
                 </div>
+                <p className="text-sm text-center pt-5 text-neutral-400">
+                    Already have an account?
+                    <Link href={'/login'} className="underline">
+                        {' '}
+                        Login now
+                    </Link>
+                </p>
             </form>
         </div>
     );

@@ -2,15 +2,19 @@
 import { Input, InputProps } from '@nextui-org/react';
 import { EyeIcon, EyeOff } from 'lucide-react';
 import React, { useState } from 'react';
+import { UseFormRegisterReturn } from 'react-hook-form';
 
-const CustomPasswordField = ({ ...props }: InputProps) => {
+const CustomPasswordField = ({
+    register,
+    ...props
+}: InputProps & {
+    register: () => UseFormRegisterReturn<any>;
+}) => {
     const [isPassword, setIsPassword] = useState(false);
 
     const togglePassword = () => {
         setIsPassword((prev) => !prev);
     };
-
-    console.log(props)
 
     return (
         <Input
@@ -23,6 +27,7 @@ const CustomPasswordField = ({ ...props }: InputProps) => {
                 )
             }
             {...props}
+            {...register()}
         />
     );
 };
